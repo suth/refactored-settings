@@ -197,7 +197,7 @@ class Refactored_Settings_0_1 {
 			case 'dropdown':
 				$html .= '<select id="' . $this->slug . '-' . $args['slug'] . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . ']">';
 				foreach ( $args['options'] as $key => $dropdown_option ) {
-					$selected_attr = ( $this->options[$args['group']][$args['slug']] == $key ? 'selected="selected" ' : '' );
+					$selected_attr = ( $this->options[$args['group']][$args['slug']] === $key ? 'selected="selected" ' : '' );
 					$html .= '<option value="' . $key . '" ' . $selected_attr . '>' . $dropdown_option . '</option>';
 				}
 				$html .= '</select>';
