@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_1' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_2' ) ) :
 
-class Refactored_Settings_0_1 {
+class Refactored_Settings_0_2 {
 
 	public $plugin_file;
 	public $version;
@@ -164,6 +164,17 @@ class Refactored_Settings_0_1 {
 				$html .= ' <label for="' . $this->slug . '-' . $args['slug'] . '"> ' . $args['description'] . '</label>';
 				break;
 
+			case 'textarea':
+				$class = false;
+				if ( $args['class'] && is_array( $args['class'] ) ) {
+					$class = implode( ' ', $args['class'] );
+				} elseif ( $args['class'] ) {
+					$class = $args['class'];
+				}
+				$html .= '<textarea id="' . $this->slug . '-' . $args['slug'] . '"' . ( $class ? 'class="' . $class . '"' : '' ) . ' name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . ']" style="width:420px;height:200px;">' . $this->options[$args['group']][$args['slug']] . '</textarea>';
+				if ( $args['description'] ) $html .= '<br>' . $args['description'];
+				break;
+
 			case 'checkbox':
 				$html .= '<label for="' . $this->slug . '-' . $args['slug'] . '">';
 				$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . ']" ' . ( $this->options[$args['group']][$args['slug']] ? 'checked="checked"' : '' ) . '/>';
@@ -199,6 +210,32 @@ class Refactored_Settings_0_1 {
 				foreach ( $args['options'] as $key => $dropdown_option ) {
 					$selected_attr = ( $this->options[$args['group']][$args['slug']] == $key ? 'selected="selected" ' : '' );
 					$html .= '<option value="' . $key . '" ' . $selected_attr . '>' . $dropdown_option . '</option>';
+				}
+				$html .= '</select>';
+				$html .= ' <label for="' . $this->slug . '-' . $args['slug'] . '"> ' . $args['description'] . '</label>';
+				break;
+
+			case 'multi_post_types':
+				if ( $args['description'] ) $html .= $args['description'] . '<br>';
+				$post_types = get_post_types( array( 'public' => true ), 'objects' );
+				unset( $post_types['attachment'] );
+				$i = 0;
+				foreach ( $post_types as $post_type ) {
+					$i++;
+					$html .= '<label for="' . $this->slug . '-' . $args['slug'] . '-' . $post_type->name . '">';
+					$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '-' . $post_type->name . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . '][]" value="' . $post_type->name . '" ' . ( in_array( $post_type->name, $this->options[$args['group']][$args['slug']] ) ? 'checked="checked"' : '' ) . '/>';
+					$html .= ' ' . $post_type->labels->singular_name . '</label>';
+					if ( $i != count( $post_types ) ) $html .= '<br>';
+				}
+				break;
+			
+			case 'single_post_type':
+				$post_types = get_post_types( array( 'public' => true ), 'objects' );
+				unset( $post_types['attachment'] );
+				$html .= '<select id="' . $this->slug . '-' . $args['slug'] . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . ']">';
+				foreach ( $post_types as $post_type ) {
+					$selected_attr = ( $this->options[$args['group']][$args['slug']] == $post_type->name ? 'selected="selected" ' : '' );
+					$html .= '<option value="' . $post_type->name . '" ' . $selected_attr . '>' . $post_type->labels->singular_name . '</option>';
 				}
 				$html .= '</select>';
 				$html .= ' <label for="' . $this->slug . '-' . $args['slug'] . '"> ' . $args['description'] . '</label>';
