@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_2' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_3' ) ) :
 
-class Refactored_Settings_0_2 {
+class Refactored_Settings_0_3 {
 
 	public $plugin_file;
 	public $version;
@@ -148,7 +148,17 @@ class Refactored_Settings_0_2 {
 	}
 
 	function sanitize_callback( $input ) {
-		$input['version'] = $this->version;
+		$output = array(
+			'version' => $this->version
+		);
+		foreach ( $this->options_fields as $group => $value ) {
+			$option_group = array();
+			foreach ( $value['fields'] as $option => $value ) {
+				$option_group[$option] = $input[$group][$option];
+			}
+			$output[$group] = $option_group;
+		}
+		return $output;
 		return $input;
 	}
 
