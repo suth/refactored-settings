@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 Sutherland Boswell  (email : hello@sutherlandboswell.com)
+/*  Copyright 2014 Sutherland Boswell  (email : hello@sutherlandboswell.com)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as 
@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_3' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_3_1' ) ) :
 
-class Refactored_Settings_0_3 {
+class Refactored_Settings_0_3_1 {
 
 	public $plugin_file;
 	public $version;
@@ -196,8 +196,9 @@ class Refactored_Settings_0_3 {
 				$i = 0;
 				foreach ( $args['options'] as $key => $checkbox_option ) {
 					$i++;
+					$selected = ( $this->options[$args['group']][$args['slug']] ? $this->options[$args['group']][$args['slug']] : array() );
 					$html .= '<label for="' . $this->slug . '-' . $args['slug'] . '-' . $key . '">';
-					$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '-' . $key . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . '][]" value="' . $key . '" ' . ( in_array( $key, $this->options[$args['group']][$args['slug']] ) ? 'checked="checked"' : '' ) . '/>';
+					$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '-' . $key . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . '][]" value="' . $key . '" ' . ( in_array( $key, $selected ) ? 'checked="checked"' : '' ) . '/>';
 					$html .= ' ' . $checkbox_option . '</label>';
 					if ( $i != count( $args['options'] ) ) $html .= '<br>';
 				}
