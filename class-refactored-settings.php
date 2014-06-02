@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_3_1' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_4' ) ) :
 
-class Refactored_Settings_0_3_1 {
+class Refactored_Settings_0_4 {
 
 	public $plugin_file;
 	public $version;
@@ -251,6 +251,34 @@ class Refactored_Settings_0_3_1 {
 				$html .= '</select>';
 				$html .= ' <label for="' . $this->slug . '-' . $args['slug'] . '"> ' . $args['description'] . '</label>';
 				break;
+
+			case 'multi_taxonomy':
+				if ( $args['description'] ) $html .= $args['description'] . '<br>';
+				$taxonomies = $this->get_taxonomies_array( false );
+				$current_taxonomies = $this->options[$args['group']][$args['slug']];
+				if ( !is_array( $current_taxonomies ) ) {
+					$current_taxonomies = array();
+				}
+				$i = 0;
+				foreach ( $taxonomies as $taxonomy => $taxonomy_display_name ) {
+					$i++;
+					$html .= '<label for="' . $this->slug . '-' . $args['slug'] . '-' . $taxonomy . '">';
+					$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '-' . $taxonomy . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . '][]" value="' . $taxonomy . '" ' . ( in_array( $taxonomy, $current_taxonomies ) ? 'checked="checked"' : '' ) . '/>';
+					$html .= ' ' . $taxonomy_display_name . '</label>';
+					if ( $i != count( $taxonomies ) ) $html .= '<br>';
+				}
+				break;
+			
+			case 'single_taxonomy':
+				$taxonomies = $this->get_taxonomies_array( true );
+				$html .= '<select id="' . $this->slug . '-' . $args['slug'] . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . ']">';
+				foreach ( $taxonomies as $taxonomy => $taxonomy_display_name ) {
+					$selected_attr = ( $this->options[$args['group']][$args['slug']] == $taxonomy ? 'selected="selected" ' : '' );
+					$html .= '<option value="' . $taxonomy . '" ' . $selected_attr . '>' . $taxonomy_display_name . '</option>';
+				}
+				$html .= '</select>';
+				$html .= ' <label for="' . $this->slug . '-' . $args['slug'] . '"> ' . $args['description'] . '</label>';
+				break;
 			
 			default:
 				# code...
@@ -277,6 +305,21 @@ class Refactored_Settings_0_3_1 {
 
 			<?php
 
+	}
+
+	/**
+	 * Gets an array of taxonomies
+	 * @param  boolean $none If a "none" option should be included in the array
+	 * @return array         Array of key/value pairs of taxonomies
+	 */
+	function get_taxonomies_array( $none = false ) {
+		$output = array();
+		if ( $none ) $output['none'] = 'None';
+		$taxonomies = get_taxonomies( array( 'show_ui' => true ), 'objects' );
+		foreach ( $taxonomies as $key => $value ) {
+			$output[$key] = $value->labels->name;
+		}
+		return $output;
 	}
 
 }
