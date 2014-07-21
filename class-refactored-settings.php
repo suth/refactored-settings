@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_4' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_4_1' ) ) :
 
-class Refactored_Settings_0_4 {
+class Refactored_Settings_0_4_1 {
 
 	public $plugin_file;
 	public $version;
@@ -95,12 +95,37 @@ class Refactored_Settings_0_4 {
 		// Boolean for if options need updating
 		$options_need_updating = false;
 
-		// Save options to database if they've been updated
-		if ( $options_need_updating ) {
-			update_option( $this->slug, $options );
+		// This is the array we'll end up returning the upgraded options in
+		$upgraded_options = array();
+
+		// The default options
+		$default_options = $this->get_default_options();
+
+		// Loop through defaults to make sure we've filled any new options
+		foreach ( $default_options as $group_key => $option_group ) {
+			// Handle the version
+			if ( $group_key == 'version' ) {
+				$upgraded_options['version'] = $option_group;
+				continue;
+			}
+			// Loop through the group's fields
+			foreach ( $option_group as $key => $value ) {
+				// If the option already exists in our settings, use the existing value. Otherwise use the default.
+				if ( isset( $options[$group_key][$key] ) ) {
+					$upgraded_options[$group_key][$key] = $options[$group_key][$key];
+				} else {
+					$upgraded_options[$group_key][$key] = $default_options[$group_key][$key];
+					$options_need_updating = true;
+				}
+			}
 		}
 
-		return $options;
+		// Save options to database if they've been updated
+		if ( $options_need_updating ) {
+			update_option( $this->slug, $upgraded_options );
+		}
+
+		return $upgraded_options;
 
 	}
 
