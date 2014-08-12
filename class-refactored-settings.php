@@ -15,9 +15,9 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if ( !class_exists( 'Refactored_Settings_0_4_1' ) ) :
+if ( !class_exists( 'Refactored_Settings_0_4_2' ) ) :
 
-class Refactored_Settings_0_4_1 {
+class Refactored_Settings_0_4_2 {
 
 	public $plugin_file;
 	public $version;
@@ -37,6 +37,8 @@ class Refactored_Settings_0_4_1 {
 		register_deactivation_hook( $this->plugin_file, array( &$this, 'plugin_deactivation' ) );
 		// Set current options
 		add_action( 'plugins_loaded', array( &$this, 'set_options' ) );
+		// Perform any needed functions when the option field is updated in the database
+		add_action( 'update_option_' . $this->slug, array( &$this, 'options_updated' ) );
 		// Add options page to menu
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 		// Initialize options
@@ -83,6 +85,14 @@ class Refactored_Settings_0_4_1 {
 		$options = $this->upgrade_options( $options );
 		// Set the options class variable
 		$this->options = $options;
+	}
+
+	/**
+	 * Runs when the options are updated
+	 */
+	function options_updated() {
+		// Get the latest options
+		$this->set_options();
 	}
 
 	/**
