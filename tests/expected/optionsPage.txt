@@ -1,0 +1,18 @@
+        <div class="wrap">
+
+			<div id="icon-options-general" class="icon32"></div><h2>Test Plugin Settings</h2>
+
+			<form method="post" action="options.php">
+
+                
+				<input type='hidden' name='option_page' value='test_plugin' /><input type="hidden" name="action" value="update" /><input type="hidden" id="_wpnonce" name="_wpnonce" value="%c%c%c%c%c%c%c%c%c%c" /><input type="hidden" name="_wp_http_referer" value="" />  
+				<h2>Sample Section</h2>
+<p>A short description.</p><table class="form-table"><tr><th scope="row">Field Name</th><td><input type="text" id="test_plugin-general-name" name="test_plugin[general][name]" value="custom"/> <label for="test_plugin-general-name">The name of the custom field.</label></td></tr><tr><th scope="row">Enabled</th><td><input type="text" id="test_plugin-general-enabled" name="test_plugin[general][enabled]" value=""/> <label for="test_plugin-general-enabled">If the feature should be enabled.</label></td></tr></table>            
+
+                
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes"  /></p>  
+
+			</form>
+
+        </div>
+        
