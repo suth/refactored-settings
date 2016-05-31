@@ -1,6 +1,14 @@
+[![Build Status](https://travis-ci.org/suth/refactored-settings.svg?branch=master)](https://travis-ci.org/suth/refactored-settings)
+
 # Refactored Settings
 
 An easy to use fluent wrapper for the WordPress Settings API.
+
+## Requirements
+
+PHP 5.3+ (5.2 support planned)
+
+## Example
 
 Below is an example.
 
