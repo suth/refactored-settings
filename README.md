@@ -40,5 +40,5 @@ $settings->init();
 You should now have a fully functioning settings page with all the options you've specified. You'll also be able to access your settings:
 
 ```php
-echo $settings->options->general->enabled->getValue();
+echo $settings->general->enabled->getValue();
 ```
