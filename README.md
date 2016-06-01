@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/suth/refactored-settings.svg?branch=master)](https://travis-ci.org/suth/refactored-settings)
+[![Build Status](https://travis-ci.org/suth/refactored-settings.svg?branch=master)](https://travis-ci.org/suth/refactored-settings) [![Coverage Status](https://coveralls.io/repos/github/suth/refactored-settings/badge.svg?branch=master)](https://coveralls.io/github/suth/refactored-settings?branch=master)
 
 # Refactored Settings
 
