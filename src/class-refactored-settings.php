@@ -197,12 +197,12 @@ class Refactored_Settings_0_5_0 {
 
                 <?php $this->doAction('before'); ?>
 
-				<?php settings_fields( $this->getSlug() ); ?>  
-				<?php do_settings_sections( $this->getSlug() ); ?>            
+				<?php settings_fields( $this->getSlug() ); ?> 
+				<?php do_settings_sections( $this->getSlug() ); ?> 
 
                 <?php $this->doAction('after'); ?>
 
-				<?php submit_button(); ?>  
+				<?php submit_button(); ?> 
 
 			</form>
 
