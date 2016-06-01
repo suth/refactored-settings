@@ -6,7 +6,7 @@ An easy to use fluent wrapper for the WordPress Settings API.
 
 ## Requirements
 
-PHP 5.3+ (5.2 support planned)
+PHP 5.3+
 
 ## Example
 
@@ -22,7 +22,7 @@ $section = Refactored_Settings_Section_0_5_0::withSlug('general')
     ->addFields(array(
         Refactored_Settings_Field_0_5_0::withSlug('name')
             ->name('Field Name')
-            ->description('The name of the custom field.')
+            ->description('The name of a custom field.')
             ->type('text')
             ->defaultValue('custom'),
         Refactored_Settings_Field_0_5_0::withSlug('enabled')
@@ -42,3 +42,65 @@ You should now have a fully functioning settings page with all the options you'v
 ```php
 $settings->general->enabled->getValue();
 ```
+
+## Versioning
+
+To avoid possible conflicts with plugins using different versions, class names have the version number appended.
+
+Please be aware this project is still in development and may rapidly change.
+
+## Hooks
+
+Various action hooks are provided for your convenience.
+
+### Settings Hooks
+
+These hooks are related to the main settings class which will be passed as an argument. Replace `{$setting}` with your chosen slug.
+
+#### rfs/pre_init:{$setting}
+
+Fires before the setting is initialized
+
+#### rfs/post_init:{$setting}
+
+Fires after the setting is initialized
+
+#### rfs/before:{$setting}
+
+Print to settings page before the form
+
+#### rfs/after:{$setting}
+
+Print to settings page after the form
+
+#### rfs/activation:{$setting}
+
+If a plugin file is specified, this is fired upon activation
+
+#### rfs/deactivation:{$setting}
+
+If a plugin file is specified, this is fired upon deactivation
+
+### Section Hooks
+
+These hooks are related to the settings section class which will be passed as an argument. Replace `{$setting}` and `{$section}` with their relative slugs.
+
+#### rfs/pre_init:{$setting}.{$section}
+
+Fires before the section is initialized
+
+#### rfs/post_init:{$setting}.{$section}
+
+Fires after the section is initialized
+
+### Field Hooks
+
+These hooks are related to the settings field class which will be passed as an argument. Replace `{$setting}`, `{$section}`, and `{$field}` with their relative slugs.
+
+#### rfs/pre_init:{$setting}.{$section}.{$field}
+
+Fires before the field is initialized
+
+#### rfs/post_init:{$setting}.{$section}.{$field}
+
+Fires after the field is initialized

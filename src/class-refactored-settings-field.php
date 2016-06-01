@@ -276,10 +276,23 @@ class Refactored_Settings_Field_0_5_0 {
     }
 
     /**
+     * Calls the WP do_action function
+     * Uses action name with the format "rfs/$tag:page_slug.section_slug.field_slug"
+     *
+     * @param string $tag
+     */
+    private function doAction($tag)
+    {
+        do_action('rfs/' . $tag . ':' . $this->getPage() . '.' . $this->getSection() . '.' . $this->getSlug(), $this);
+    }
+
+    /**
      * Initialize the field
      */
     public function init()
     {
+        $this->doAction('pre_init');
+
         add_settings_field(
             $this->getId(),
             $this->getName(),
@@ -287,6 +300,8 @@ class Refactored_Settings_Field_0_5_0 {
             $this->getPage(),
             $this->getSection()
         );
+
+        $this->doAction('post_init');
     }
 
     /**
