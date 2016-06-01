@@ -28,7 +28,7 @@ $section = Refactored_Settings_Section_0_5_0::withSlug('general')
         Refactored_Settings_Field_0_5_0::withSlug('enabled')
             ->name('Enabled')
             ->description('If the feature should be enabled.')
-            ->type('text')
+            ->type('checkbox')
             ->defaultValue(false),
     ));
 
@@ -40,5 +40,5 @@ $settings->init();
 You should now have a fully functioning settings page with all the options you've specified. You'll also be able to access your settings:
 
 ```php
-echo $settings->general->enabled->getValue();
+$settings->general->enabled->getValue();
 ```
