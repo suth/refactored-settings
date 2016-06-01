@@ -121,6 +121,25 @@ class Refactored_Settings_Section_0_5_0 {
         }
     }
 
+    /**
+     * Sanitizes input data
+     *
+     * @param array $input
+     * @return array
+     */
+    public function sanitize($input)
+    {
+        $output = array();
+
+		foreach ($this->getFields() as $field) {
+            $output[$field->getSlug()] = $field->sanitize(
+                $input[$field->getSlug()]
+            );
+		}
+
+		return $output;
+    }
+
     public function callback($callback)
     {
         $this->callback = $callback;

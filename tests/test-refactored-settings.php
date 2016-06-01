@@ -341,18 +341,19 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function it_sanitizes_input()
     {
-        $section = $this->section;
-        $field = $this->field;
+        $section = $this->getMock(get_class($this->section), array('sanitize'));
+
+        $section->expects($this->once())
+            ->method('sanitize')
+            ->willReturn(array(
+                'enabled' => true
+            ));
+
+        $section->slug('general');
 
         $this->obj->slug('test_plugin')
             ->version('1.0')
-            ->addSection(
-                $section::withSlug('general')
-                    ->addFields(array(
-                        $field::withSlug('enabled')
-                            ->type('checkbox')
-                    ))
-            );
+            ->addSection($section);
 
         $output = $this->obj->sanitizeInput(array(
             'general' => array(

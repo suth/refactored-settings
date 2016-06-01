@@ -159,6 +159,29 @@ class Refactored_Settings_Field_0_5_0 {
     }
 
     /**
+     * Get the valid field types
+     *
+     * @return array
+     */
+    protected function validTypes()
+    {
+        return array(
+            'text',
+            'textarea',
+            'checkbox',
+            'radio',
+            'select',
+            'post_type',
+            'taxonomy',
+        );
+    }
+
+    private function guardAgainstInvalidType($type)
+    {
+        if ( ! in_array($type, $this->validTypes())) wp_die('Refactored Settings Error: "' . $type . '" is not a valid field type.');
+    }
+
+    /**
      * Set the type of field
      *
      * @param string $type
@@ -166,6 +189,8 @@ class Refactored_Settings_Field_0_5_0 {
      */
     public function type($type)
     {
+        $this->guardAgainstInvalidType($type);
+
         $this->type = $type;
 
         return $this;
@@ -266,7 +291,7 @@ class Refactored_Settings_Field_0_5_0 {
      *
      * @return mixed
      */
-    private function getCallback()
+    public function getCallback()
     {
         if ($this->callback) {
             return $this->callback;
@@ -311,9 +336,13 @@ class Refactored_Settings_Field_0_5_0 {
      */
     public function getValue()
     {
+        $value = null;
+
         $options = get_option( $this->getPage() );
 
-        $value = $options[$this->getSection()][$this->getSlug()];
+        if (isset($options[$this->getSection()][$this->getSlug()])) {
+            $value = $options[$this->getSection()][$this->getSlug()];
+        }
 
         if (is_null($value)) {
             $value = $this->getDefaultValue();
@@ -330,31 +359,6 @@ class Refactored_Settings_Field_0_5_0 {
     public function getEscapedValue()
     {
         return htmlspecialchars($this->getValue());
-    }
-
-    /**
-     * Fetch this field from settings form input
-     *
-     * @param array $input
-     * @return mixed
-     */
-    public function getValueFromInput($input)
-    {
-        /*
-         * Set value to use in case field is not present in input.
-         * If field has an options array, we assume the value is an array.
-         */
-        if ($this->valueIsArray()) {
-            $value = array();
-        } else {
-            $value = false;
-        }
-
-        if (isset($input[$this->getSection()][$this->getSlug()])) {
-            $value = $input[$this->getSection()][$this->getSlug()];
-        }
-
-        return $this->sanitize($value);
     }
 
     /**

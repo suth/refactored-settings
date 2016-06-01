@@ -21,14 +21,14 @@ $section = Refactored_Settings_Section_0_5_0::withSlug('general')
     ->description('A short description.')
     ->addFields(array(
         Refactored_Settings_Field_0_5_0::withSlug('name')
+            ->type('text')
             ->name('Field Name')
             ->description('The name of a custom field.')
-            ->type('text')
             ->defaultValue('custom'),
         Refactored_Settings_Field_0_5_0::withSlug('enabled')
+            ->type('checkbox')
             ->name('Enabled')
             ->description('If the feature should be enabled.')
-            ->type('checkbox')
             ->defaultValue(false),
     ));
 

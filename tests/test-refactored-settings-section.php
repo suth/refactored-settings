@@ -202,6 +202,33 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
 
     /**
      * @test
+     * @covers ::sanitize
+     */
+    public function it_has_a_sanitize_method()
+    {
+        $field = $this->getMock(get_class($this->field), array('sanitize'));
+
+        $field->expects($this->once())
+            ->method('sanitize')
+            ->willReturn(true);
+
+        $field->slug('field');
+
+        $this->obj->slug('section')
+            ->addField($field);
+        
+        $data = array(
+            'field' => 'on'
+        );
+
+        $this->assertEquals(
+            array('field' => true),
+            $this->obj->sanitize($data)
+        );
+    }
+
+    /**
+     * @test
      * @covers ::__get
      */
     public function it_has_a_magic_getter_for_fields()

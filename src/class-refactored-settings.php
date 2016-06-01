@@ -301,12 +301,11 @@ class Refactored_Settings_0_5_0 {
         }
 
 		foreach ($this->getSections() as $section) {
-			$option_group = array();
-			foreach ($section->getFields() as $field) {
-                $option_group[$field->getSlug()] = $field->getValueFromInput($input);
-			}
-			$output[$section->getSlug()] = $option_group;
+            $output[$section->getSlug()] = $section->sanitize(
+                $input[$section->getSlug()]
+            );
 		}
+
 		return $output;
 	}
 }
