@@ -8,10 +8,9 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
     private $section;
     private $field;
 
-    public function setUp()
+    /** @before */
+    public function configureObjects()
     {
-        parent::setUp();
-
         $this->obj = new Refactored_Settings_0_5_0();
         $this->section = new Refactored_Settings_Section_0_5_0();
         $this->field = new Refactored_Settings_Field_0_5_0();
