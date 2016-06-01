@@ -85,6 +85,11 @@ class Refactored_Settings_Section_0_5_0 {
         return $this;
     }
 
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
     public function addFields($fields)
     {
         foreach ($fields as $field) {
@@ -96,8 +101,8 @@ class Refactored_Settings_Section_0_5_0 {
 
     public function addField($field)
     {
-        $field = $field->page($this->getPage());
-        $field = $field->section($this->getSlug());
+        $field->page($this->getPage());
+        $field->section($this->getSlug());
 
         $this->fields[] = $field;
 
@@ -123,7 +128,7 @@ class Refactored_Settings_Section_0_5_0 {
         return $this;
     }
 
-    private function getCallback()
+    public function getCallback()
     {
         if ($this->callback) {
             return $this->callback;
@@ -134,7 +139,9 @@ class Refactored_Settings_Section_0_5_0 {
 
     public function render()
     {
-        echo '<p>' . $this->description . '</p>';
+        if ($this->getDescription()) {
+            echo '<p>' . $this->getDescription() . '</p>';
+        }
     }
 
     /**
