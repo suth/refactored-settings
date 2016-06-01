@@ -11,7 +11,6 @@ env:
     - WP_VERSION=latest WP_MULTISITE=0
 
 install:
-    - composer self-update --stable
     - composer require phpunit/phpunit:4.8.* satooshi/php-coveralls:~1.0
 
 before_script:
@@ -19,8 +18,7 @@ before_script:
     - mkdir -p build/logs
 
 script:
-    - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
-    - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
     - php vendor/bin/coveralls -v
