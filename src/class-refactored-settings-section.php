@@ -20,7 +20,7 @@ if ( !class_exists( 'Refactored_Settings_Section_0_5_0' ) ) :
 class Refactored_Settings_Section_0_5_0 {
 
 	protected $page;
-	protected $slug;
+	protected $key;
 	protected $name;
 	protected $description;
 	protected $callback;
@@ -30,24 +30,24 @@ class Refactored_Settings_Section_0_5_0 {
         $this->fields = array();
 	}
 
-    public static function withSlug($slug)
+    public static function withKey($key)
     {
         $obj = new self;
-        $obj = $obj->slug($slug);
+        $obj = $obj->key($key);
 
         return $obj;
     }
 
-    public function slug($slug)
+    public function key($key)
     {
-        $this->slug = $slug;
+        $this->key = $key;
 
         return $this;
     }
 
-    public function getSlug()
+    public function getKey()
     {
-        return $this->slug;
+        return $this->key;
     }
 
     public function page($page)
@@ -102,7 +102,7 @@ class Refactored_Settings_Section_0_5_0 {
     public function addField($field)
     {
         $field->page($this->getPage());
-        $field->section($this->getSlug());
+        $field->section($this->getKey());
 
         $this->fields[] = $field;
 
@@ -117,7 +117,7 @@ class Refactored_Settings_Section_0_5_0 {
     public function __get($name)
     {
         foreach ($this->getFields() as $field) {
-            if ($name == $field->getSlug()) return $field;
+            if ($name == $field->getKey()) return $field;
         }
     }
 
@@ -132,8 +132,8 @@ class Refactored_Settings_Section_0_5_0 {
         $output = array();
 
 		foreach ($this->getFields() as $field) {
-            $output[$field->getSlug()] = $field->sanitize(
-                $input[$field->getSlug()]
+            $output[$field->getKey()] = $field->sanitize(
+                $input[$field->getKey()]
             );
 		}
 
@@ -165,13 +165,13 @@ class Refactored_Settings_Section_0_5_0 {
 
     /**
      * Calls the WP do_action function
-     * Uses action name with the format "rfs/$tag:page_slug.section_slug"
+     * Uses action name with the format "rfs/$tag:page_key.section_key"
      *
      * @param string $tag
      */
     private function doAction($tag)
     {
-        do_action('rfs/' . $tag . ':' . $this->getPage() . '.' . $this->getSlug(), $this);
+        do_action('rfs/' . $tag . ':' . $this->getPage() . '.' . $this->getKey(), $this);
     }
 
     public function init()
@@ -179,7 +179,7 @@ class Refactored_Settings_Section_0_5_0 {
         $this->doAction('pre_init');
 
         add_settings_section(
-            $this->getSlug(),
+            $this->getKey(),
             $this->getName(),
             $this->getCallback(),
             $this->getPage()

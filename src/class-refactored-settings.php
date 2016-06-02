@@ -22,7 +22,7 @@ class Refactored_Settings_0_5_0 {
 	protected $plugin_file;
 	protected $version;
 	protected $title;
-	protected $slug;
+	protected $key;
     protected $sections;
 	protected $options;
 
@@ -33,39 +33,39 @@ class Refactored_Settings_0_5_0 {
 	}
 
     /**
-     * Construct a new instance with given slug
+     * Construct a new instance with given key
      *
-     * @param string $slug
+     * @param string $key
      * @return Refactored_Settings
      */
-    public static function withSlug($slug)
+    public static function withKey($key)
     {
         $obj = new self;
 
-        return $obj->slug($slug);
+        return $obj->key($key);
     }
 
     /**
-     * Set the slug
+     * Set the key
      *
-     * @param string $slug
+     * @param string $key
      * @return $this
      */
-    public function slug($slug)
+    public function key($key)
     {
-        $this->slug = $slug;
+        $this->key = $key;
 
         return $this;
     }
 
     /**
-     * Get the slug to use for the settings
+     * Get the key to use for the settings
      *
      * @return string
      */
-    public function getSlug()
+    public function getKey()
     {
-        return $this->slug;
+        return $this->key;
     }
 
     /**
@@ -149,20 +149,20 @@ class Refactored_Settings_0_5_0 {
 			$this->getTitle() . ' Settings',
 			$this->getTitle(),
 			'manage_options',
-			$this->getSlug(),
+			$this->getKey(),
 			array( &$this, 'optionsPage' )
         );
     }
 
     /**
      * Calls the WP do_action function
-     * Uses action name with the format "rfs/$tag:page_slug"
+     * Uses action name with the format "rfs/$tag:page_key"
      *
      * @param string $tag
      */
     private function doAction($tag)
     {
-        do_action('rfs/' . $tag . ':' . $this->getSlug(), $this);
+        do_action('rfs/' . $tag . ':' . $this->getKey(), $this);
     }
 
     public function init()
@@ -173,7 +173,7 @@ class Refactored_Settings_0_5_0 {
             $section->init();
         }
 
-        register_setting( $this->getSlug(), $this->getSlug(), array( &$this, 'sanitizeInput' ) );
+        register_setting( $this->getKey(), $this->getKey(), array( &$this, 'sanitizeInput' ) );
 
 		// Add options page to menu
 		add_action( 'admin_menu', array( &$this, 'adminMenu' ) );
@@ -197,8 +197,8 @@ class Refactored_Settings_0_5_0 {
 
                 <?php $this->doAction('before'); ?>
 
-				<?php settings_fields( $this->getSlug() ); ?> 
-				<?php do_settings_sections( $this->getSlug() ); ?> 
+				<?php settings_fields( $this->getKey() ); ?> 
+				<?php do_settings_sections( $this->getKey() ); ?> 
 
                 <?php $this->doAction('after'); ?>
 
@@ -233,7 +233,7 @@ class Refactored_Settings_0_5_0 {
     public function pluginDeactivation()
     {
         $this->doAction('deactivation');
-		delete_option($this->getSlug());
+		delete_option($this->getKey());
 	}
 
     /**
@@ -244,7 +244,7 @@ class Refactored_Settings_0_5_0 {
      */
     public function addSection($section)
     {
-        $section = $section->page($this->getSlug());
+        $section = $section->page($this->getKey());
         $this->sections[] = $section;
 
         return $this;
@@ -279,7 +279,7 @@ class Refactored_Settings_0_5_0 {
     {
         $output = null;
         foreach ($this->getSections() as $section) {
-            if ($name == $section->getSlug()) {
+            if ($name == $section->getKey()) {
                 $output = $section;
                 break;
             }
@@ -301,8 +301,8 @@ class Refactored_Settings_0_5_0 {
         }
 
 		foreach ($this->getSections() as $section) {
-            $output[$section->getSlug()] = $section->sanitize(
-                $input[$section->getSlug()]
+            $output[$section->getKey()] = $section->sanitize(
+                $input[$section->getKey()]
             );
 		}
 

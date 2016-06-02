@@ -13,19 +13,19 @@ PHP 5.3+
 Below is an example.
 
 ```php
-$settings = Refactored_Settings_0_5_0::withSlug('my_settings')
+$settings = Refactored_Settings_0_5_0::withKey('my_settings')
     ->version('1.0');
 
-$section = Refactored_Settings_Section_0_5_0::withSlug('general')
+$section = Refactored_Settings_Section_0_5_0::withKey('general')
     ->name('Sample Section')
     ->description('A short description.')
     ->addFields(array(
-        Refactored_Settings_Field_0_5_0::withSlug('name')
+        Refactored_Settings_Field_0_5_0::withKey('name')
             ->type('text')
             ->name('Field Name')
             ->description('The name of a custom field.')
             ->defaultValue('custom'),
-        Refactored_Settings_Field_0_5_0::withSlug('enabled')
+        Refactored_Settings_Field_0_5_0::withKey('enabled')
             ->type('checkbox')
             ->name('Enabled')
             ->description('If the feature should be enabled.')
@@ -55,7 +55,7 @@ Various action hooks are provided for your convenience.
 
 ### Settings Hooks
 
-These hooks are related to the main settings class which will be passed as an argument. Replace `{$setting}` with your chosen slug.
+These hooks are related to the main settings class which will be passed as an argument. Replace `{$setting}` with your chosen key.
 
 #### rfs/pre_init:{$setting}
 
@@ -83,7 +83,7 @@ If a plugin file is specified, this is fired upon deactivation
 
 ### Section Hooks
 
-These hooks are related to the settings section class which will be passed as an argument. Replace `{$setting}` and `{$section}` with their relative slugs.
+These hooks are related to the settings section class which will be passed as an argument. Replace `{$setting}` and `{$section}` with their relative keys.
 
 #### rfs/pre_init:{$setting}.{$section}
 
@@ -95,7 +95,7 @@ Fires after the section is initialized
 
 ### Field Hooks
 
-These hooks are related to the settings field class which will be passed as an argument. Replace `{$setting}`, `{$section}`, and `{$field}` with their relative slugs.
+These hooks are related to the settings field class which will be passed as an argument. Replace `{$setting}`, `{$section}`, and `{$field}` with their relative keys.
 
 #### rfs/pre_init:{$setting}.{$section}.{$field}
 

@@ -53,7 +53,7 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
         $field->expects($this->once())
             ->method('init');
 
-        $this->obj->slug('test_section')
+        $this->obj->key('test_section')
             ->page('another_plugin')
             ->addField($field)
             ->init();
@@ -69,29 +69,29 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
 
     /**
      * @test
-     * @covers ::withSlug
+     * @covers ::withKey
      */
-    public function the_withSlug_method_returns_a_new_instance()
+    public function the_withKey_method_returns_a_new_instance()
     {
         $obj = $this->obj;
-        $instance = $obj::withSlug('test_slug');
+        $instance = $obj::withKey('test_slug');
 
         $this->assertInstanceOf(get_class($this->obj), $instance);
-        $this->assertEquals('test_slug', $instance->getSlug());
+        $this->assertEquals('test_slug', $instance->getKey());
     }
 
     /**
      * @test
-     * @covers ::slug
-     * @covers ::getSlug
+     * @covers ::key
+     * @covers ::getKey
      */
-    public function it_has_a_slug_setter_and_getter()
+    public function it_has_a_key_setter_and_getter()
     {
         $value = 'section_slug';
 
         $this->assertEquals(
             $value,
-            $this->obj->slug($value)->getSlug()
+            $this->obj->key($value)->getKey()
         );
     }
 
@@ -178,11 +178,11 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
         $field = $this->field;
 
         $this->obj->addField(
-            $field::withSlug('one')
+            $field::withKey('one')
         );
         $this->obj->addFields(array(
-            $field::withSlug('two'),
-            $field::withSlug('three')
+            $field::withKey('two'),
+            $field::withKey('three')
         ));
 
         $this->assertCount(3, $this->obj->getFields());
@@ -194,7 +194,7 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
      */
     public function it_has_a_doAction_method()
     {
-        $this->obj->page('plugin_slug')->slug('section_slug');
+        $this->obj->page('plugin_slug')->key('section_slug');
         $this->invokePrivateMethod('doAction', array('some_action'));
 
         $this->assertEquals(1, did_action('rfs/some_action:plugin_slug.section_slug'));
@@ -212,9 +212,9 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
             ->method('sanitize')
             ->willReturn(true);
 
-        $field->slug('field');
+        $field->key('field');
 
-        $this->obj->slug('section')
+        $this->obj->key('section')
             ->addField($field);
         
         $data = array(
@@ -238,7 +238,7 @@ class RefactoredSettingsSectionTest extends WP_UnitTestCase {
         $field = $this->field;
 
         $this->obj->addField(
-            $field::withSlug('sample_field')
+            $field::withKey('sample_field')
         );
 
         $this->assertInstanceOf(get_class($this->field), $this->obj->sample_field);

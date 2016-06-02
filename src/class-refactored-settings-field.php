@@ -22,7 +22,7 @@ class Refactored_Settings_Field_0_5_0 {
 	protected $page;
 	protected $section;
 	protected $name;
-	protected $slug;
+	protected $key;
 	protected $description;
     protected $defaultValue;
     protected $callback;
@@ -32,38 +32,38 @@ class Refactored_Settings_Field_0_5_0 {
     /**
      * Construct a new instance
      *
-     * @param string $slug
+     * @param string $key
      * @return Refactored_Settings_Field
      */
-    public static function withSlug($slug)
+    public static function withKey($key)
     {
         $obj = new self;
-        $obj->slug($slug);
+        $obj->key($key);
 
         return $obj;
     }
 
     /**
-     * Set the field's slug
+     * Set the field's key
      *
-     * @param string $slug
+     * @param string $key
      * @return $this
      */
-    public function slug($slug)
+    public function key($key)
     {
-        $this->slug = $slug;
+        $this->key = $key;
 
         return $this;
     }
 
     /**
-     * Get the field's slug
+     * Get the field's key
      *
      * @return string
      */
-    public function getSlug()
+    public function getKey()
     {
-        return $this->slug;
+        return $this->key;
     }
 
     /**
@@ -287,7 +287,7 @@ class Refactored_Settings_Field_0_5_0 {
      */
     private function getId()
     {
-        return $this->getPage() . '-' . $this->getSection() . '-' . $this->getSlug();
+        return $this->getPage() . '-' . $this->getSection() . '-' . $this->getKey();
     }
 
     /**
@@ -323,13 +323,13 @@ class Refactored_Settings_Field_0_5_0 {
 
     /**
      * Calls the WP do_action function
-     * Uses action name with the format "rfs/$tag:page_slug.section_slug.field_slug"
+     * Uses action name with the format "rfs/$tag:page_key.section_key.field_key"
      *
      * @param string $tag
      */
     private function doAction($tag)
     {
-        do_action('rfs/' . $tag . ':' . $this->getPage() . '.' . $this->getSection() . '.' . $this->getSlug(), $this);
+        do_action('rfs/' . $tag . ':' . $this->getPage() . '.' . $this->getSection() . '.' . $this->getKey(), $this);
     }
 
     /**
@@ -361,8 +361,8 @@ class Refactored_Settings_Field_0_5_0 {
 
         $options = get_option( $this->getPage() );
 
-        if (isset($options[$this->getSection()][$this->getSlug()])) {
-            $value = $options[$this->getSection()][$this->getSlug()];
+        if (isset($options[$this->getSection()][$this->getKey()])) {
+            $value = $options[$this->getSection()][$this->getKey()];
         }
 
         if (is_null($value)) {
@@ -442,7 +442,7 @@ class Refactored_Settings_Field_0_5_0 {
      */
     private function getFieldName()
     {
-        return $this->getPage() . '[' . $this->getSection() . '][' . $this->getSlug() . ']';
+        return $this->getPage() . '[' . $this->getSection() . '][' . $this->getKey() . ']';
     }
 
     private function renderTextField()

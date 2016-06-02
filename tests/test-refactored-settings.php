@@ -56,7 +56,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
         $section->expects($this->once())
             ->method('init');
 
-        $this->obj->slug('test_plugin')
+        $this->obj->key('test_plugin')
             ->addSection($section)
             ->init();
 
@@ -78,22 +78,22 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
     public function it_creates_settings()
     {
         $obj = $this->obj;
-        $s = $obj::withSlug('test_plugin')
+        $s = $obj::withKey('test_plugin')
             ->version('1.0');
 
         $section = $this->section;
         $field = $this->field;
 
-        $section_one = $section::withSlug('general')
+        $section_one = $section::withKey('general')
             ->name('Sample Section')
             ->description('A short description.')
             ->addFields(array(
-                $field::withSlug('name')
+                $field::withKey('name')
                     ->name('Field Name')
                     ->description('The name of the custom field.')
                     ->type('text')
                     ->defaultValue('custom'),
-                $field::withSlug('enabled')
+                $field::withKey('enabled')
                     ->name('Enabled')
                     ->description('If the feature should be enabled.')
                     ->type('text')
@@ -108,29 +108,29 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
 
     /**
      * @test
-     * @covers ::withSlug
+     * @covers ::withKey
      */
-    public function the_withSlug_method_returns_a_new_instance()
+    public function the_withKey_method_returns_a_new_instance()
     {
         $obj = $this->obj;
-        $instance = $obj::withSlug('test_slug');
+        $instance = $obj::withKey('test_slug');
 
         $this->assertInstanceOf(get_class($this->obj), $instance);
-        $this->assertEquals('test_slug', $instance->getSlug());
+        $this->assertEquals('test_slug', $instance->getKey());
     }
 
     /**
      * @test
-     * @covers ::slug
-     * @covers ::getSlug
+     * @covers ::key
+     * @covers ::getKey
      */
-    public function it_has_a_slug_setter_and_getter()
+    public function it_has_a_key_setter_and_getter()
     {
         $value = 'setting_slug';
 
         $this->assertEquals(
             $value,
-            $this->obj->slug($value)->getSlug()
+            $this->obj->key($value)->getKey()
         );
     }
 
@@ -185,17 +185,17 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function it_has_an_optionsPage_method()
     {
-        $this->obj->slug('test_plugin')
+        $this->obj->key('test_plugin')
             ->title('Test Plugin');
 
         $section = $this->section;
         $field = $this->field;
 
-        $section_one = $section::withSlug('general')
+        $section_one = $section::withKey('general')
             ->name('Sample Section')
             ->description('A short description.')
             ->addFields(array(
-                $field::withSlug('name')
+                $field::withKey('name')
                     ->name('Field Name')
                     ->description('The name of the custom field.')
                     ->type('text')
@@ -226,7 +226,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function the_optionsPage_method_blocks_unauthorized_users()
     {
-        $this->obj->slug('test_plugin')
+        $this->obj->key('test_plugin')
             ->title('Test Plugin');
 
         $this->obj->optionsPage();
@@ -243,11 +243,11 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
         $section = $this->section;
 
         $this->obj->addSection(
-            $section::withSlug('one')
+            $section::withKey('one')
         );
         $this->obj->addSections(array(
-            $section::withSlug('two'),
-            $section::withSlug('three')
+            $section::withKey('two'),
+            $section::withKey('three')
         ));
 
         $this->assertCount(3, $this->obj->getSections());
@@ -259,7 +259,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function it_has_a_doAction_method()
     {
-        $this->obj->slug('plugin_slug');
+        $this->obj->key('plugin_slug');
         $this->invokePrivateMethod('doAction', array('some_action'));
 
         $this->assertEquals(1, did_action('rfs/some_action:plugin_slug'));
@@ -273,7 +273,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
     {
         global $wp_filter;
 
-        $this->obj->slug('plugin_slug')->pluginFile('plugin-file.php');
+        $this->obj->key('plugin_slug')->pluginFile('plugin-file.php');
 
         $this->assertArrayHasKey('activate_plugin-file.php', $wp_filter);
         $this->assertArrayHasKey('deactivate_plugin-file.php', $wp_filter);
@@ -290,7 +290,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
         $section = $this->section;
 
         $this->obj->addSection(
-            $section::withSlug('sample_section')
+            $section::withKey('sample_section')
         );
 
         $this->assertInstanceOf(get_class($this->section), $this->obj->sample_section);
@@ -304,7 +304,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
     {
         $this->logInAdmin();
         
-        $page_hook = $this->obj->slug('test_plugin')->addOptionsPage();
+        $page_hook = $this->obj->key('test_plugin')->addOptionsPage();
 
         $this->assertEquals('admin_page_test_plugin', $page_hook);
     }
@@ -315,7 +315,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function it_has_a_pluginActivation_method()
     {
-        $this->obj->slug('test_plugin');
+        $this->obj->key('test_plugin');
 
         $this->obj->pluginActivation();
 
@@ -328,7 +328,7 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
      */
     public function it_has_a_pluginDeactivation_method()
     {
-        $this->obj->slug('test_plugin');
+        $this->obj->key('test_plugin');
 
         $this->obj->pluginDeactivation();
 
@@ -349,9 +349,9 @@ class RefactoredSettingsTest extends WP_UnitTestCase {
                 'enabled' => true
             ));
 
-        $section->slug('general');
+        $section->key('general');
 
-        $this->obj->slug('test_plugin')
+        $this->obj->key('test_plugin')
             ->version('1.0')
             ->addSection($section);
 

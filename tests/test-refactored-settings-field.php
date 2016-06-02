@@ -35,7 +35,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
         return $this->obj->type($type)
             ->page('page')
             ->section('section')
-            ->slug('field')
+            ->key('field')
             ->name('Field Name')
             ->description('Field description.');
     }
@@ -65,7 +65,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_an_init_method()
     {
-        $this->obj->slug('enabled')
+        $this->obj->key('enabled')
             ->page('field_test_page')
             ->section('field_test_section')
             ->init();
@@ -81,29 +81,29 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
 
     /**
      * @test
-     * @covers ::withSlug
+     * @covers ::withKey
      */
-    public function the_withSlug_method_returns_a_new_instance()
+    public function the_withKey_method_returns_a_new_instance()
     {
         $obj = $this->obj;
-        $instance = $obj::withSlug('test_slug');
+        $instance = $obj::withKey('test_slug');
 
         $this->assertInstanceOf(get_class($this->obj), $instance);
-        $this->assertEquals('test_slug', $instance->getSlug());
+        $this->assertEquals('test_slug', $instance->getKey());
     }
 
     /**
      * @test
-     * @covers ::slug
-     * @covers ::getSlug
+     * @covers ::key
+     * @covers ::getKey
      */
-    public function it_has_a_slug_setter_and_getter()
+    public function it_has_a_key_setter_and_getter()
     {
         $value = 'field_slug';
 
         $this->assertEquals(
             $value,
-            $this->obj->slug($value)->getSlug()
+            $this->obj->key($value)->getKey()
         );
     }
 
@@ -327,7 +327,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_a_getId_method()
     {
-        $this->obj->page('page')->section('section')->slug('field');
+        $this->obj->page('page')->section('section')->key('field');
 
         $this->assertEquals(
             'page-section-field',
@@ -399,13 +399,13 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
             )
         ));
 
-        $this->obj->page('one')->section('two')->slug('three');
+        $this->obj->page('one')->section('two')->key('three');
 
         $this->assertTrue(
             $this->obj->getValue()
         );
 
-        $this->obj->slug('four');
+        $this->obj->key('four');
 
         $this->assertNull(
             $this->obj->getValue()
@@ -430,7 +430,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
             )
         ));
 
-        $this->obj->page('one')->section('two')->slug('three');
+        $this->obj->page('one')->section('two')->key('three');
 
         $this->assertEquals(
             '&lt;p&gt;Something that needs escaping&lt;/p&gt;',
@@ -461,7 +461,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_a_doAction_method()
     {
-        $this->obj->page('plugin_slug')->section('section_slug')->slug('field_slug');
+        $this->obj->page('plugin_slug')->section('section_slug')->key('field_slug');
         $this->invokePrivateMethod('doAction', array('some_action'));
 
         $this->assertEquals(1, did_action('rfs/some_action:plugin_slug.section_slug.field_slug'));
@@ -547,7 +547,7 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_a_getFieldName_method_for_input_name_attribute()
     {
-        $this->obj->page('page_set')->section('section_set')->slug('field_set');
+        $this->obj->page('page_set')->section('section_set')->key('field_set');
 
         $this->assertEquals(
             'page_set[section_set][field_set]',
