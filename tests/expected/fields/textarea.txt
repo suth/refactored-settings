@@ -1,0 +1,1 @@
+<textarea id="page-section-field" class="first-class second-class" name="page[section][field]" style="width:420px;height:200px;">A longer text input. It &lt;strong&gt;escapes&lt;/strong&gt; HTML.</textarea><p>Field description.</p>

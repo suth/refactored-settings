@@ -1,0 +1,1 @@
+<p>Field description.</p><label for="page-section-field-one"><input type="checkbox" id="page-section-field-one" name="page[section][field][]" value="one" /> One Option</label><br><label for="page-section-field-two"><input type="checkbox" id="page-section-field-two" name="page[section][field][]" value="two"  checked='checked'/> Second Option</label>

@@ -1,0 +1,1 @@
+<input type="text" id="page-section-field" name="page[section][field]" value="Default Value"/> <label for="page-section-field">Field description.</label>

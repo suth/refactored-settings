@@ -30,6 +30,35 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
         wp_set_current_user($user);
     }
 
+    private function configureExampleField($type = 'text')
+    {
+        return $this->obj->type($type)
+            ->page('page')
+            ->section('section')
+            ->slug('field')
+            ->name('Field Name')
+            ->description('Field description.');
+    }
+
+    private function getExpectedFieldFile()
+    {
+        return './tests/expected/fields/' . $this->obj->getType() . '.txt';
+    }
+
+    private function writeToExpectedFieldFile($contents)
+    {
+        file_put_contents($this->getExpectedFieldFile(), $contents);
+    }
+
+    private function assertEqualsExpectedFieldFile($html)
+    {
+        $this->assertStringEqualsFile(
+            $this->getExpectedFieldFile(),
+            $html,
+            'Failed to assert the field matches the expect HTML.'
+        );
+    }
+
     /**
      * @test
      * @covers ::init
@@ -133,10 +162,13 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
             'text',
             'textarea',
             'checkbox',
+            'checkboxes',
             'radio',
             'select',
             'post_type',
+            'post_types',
             'taxonomy',
+            'taxonomies',
         );
 
         $this->assertEquals(
@@ -186,6 +218,62 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
 
     /**
      * @test
+     * @covers ::getOptions
+     */
+    public function it_appends_post_types_to_options_when_appropriate()
+    {
+        $post_types = $this->invokePrivateMethod('getPostTypesForOptions');
+        $original_options = array('none' => 'None');
+
+        $options = array_merge($original_options, $post_types);
+
+        $this->obj->type('post_type')
+            ->options($original_options);
+
+        $this->assertEquals(
+            $options,
+            $this->obj->getOptions()
+        );
+
+        $this->obj->type('post_types')
+            ->options($original_options);
+
+        $this->assertEquals(
+            $options,
+            $this->obj->getOptions()
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::getOptions
+     */
+    public function it_appends_taxonomies_to_options_when_appropriate()
+    {
+        $taxonomies = $this->invokePrivateMethod('getTaxonomiesForOptions');
+        $original_options = array('none' => 'None');
+
+        $options = array_merge($original_options, $taxonomies);
+
+        $this->obj->type('taxonomy')
+            ->options($original_options);
+
+        $this->assertEquals(
+            $options,
+            $this->obj->getOptions()
+        );
+
+        $this->obj->type('taxonomies')
+            ->options($original_options);
+
+        $this->assertEquals(
+            $options,
+            $this->obj->getOptions()
+        );
+    }
+
+    /**
+     * @test
      * @covers ::defaultValue
      * @covers ::getDefaultValue
      */
@@ -211,7 +299,21 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
             $this->obj->getDefaultValue()
         );
 
-        $this->obj->type('checkbox')->options(array('one'));
+        $this->obj->type('checkboxes');
+
+        $this->assertEquals(
+            array(),
+            $this->obj->getDefaultValue()
+        );
+
+        $this->obj->type('post_types');
+
+        $this->assertEquals(
+            array(),
+            $this->obj->getDefaultValue()
+        );
+
+        $this->obj->type('taxonomies');
 
         $this->assertEquals(
             array(),
@@ -396,36 +498,19 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
             $this->invokePrivateMethod('valueIsArray')
         );
 
-        $this->obj->type('checkbox');
-
-        $this->assertFalse(
-            $this->invokePrivateMethod('valueIsArray')
-        );
-
-        $this->obj->options(array('option'));
+        $this->obj->type('checkboxes');
 
         $this->assertTrue(
             $this->invokePrivateMethod('valueIsArray')
         );
-    }
 
-    /**
-     * @test
-     * @covers ::valueIsArray
-     */
-    public function the_valueIsArray_method_handles_post_type_fields()
-    {
-        $this->assertFalse(
+        $this->obj->type('post_types');
+
+        $this->assertTrue(
             $this->invokePrivateMethod('valueIsArray')
         );
 
-        $this->obj->type('post_type')->defaultValue('post');
-
-        $this->assertFalse(
-            $this->invokePrivateMethod('valueIsArray')
-        );
-
-        $this->obj->defaultValue(array());
+        $this->obj->type('taxonomies');
 
         $this->assertTrue(
             $this->invokePrivateMethod('valueIsArray')
@@ -465,6 +550,189 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
         $this->assertEquals(
             'page_set[section_set][field_set]',
             $this->invokePrivateMethod('getFieldName')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::renderTextField
+     */
+    public function it_renders_a_text_field()
+    {
+        $this->configureExampleField('text')
+            ->defaultValue('Default Value');
+
+        $html = $this->invokePrivateMethod('renderTextField');
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::renderCheckbox
+     */
+    public function it_renders_a_checkbox_field()
+    {
+        $this->configureExampleField('checkbox')
+            ->defaultValue(true);
+
+        $html = $this->invokePrivateMethod('renderCheckbox');
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::renderCheckboxes
+     */
+    public function it_renders_a_checkboxes_field()
+    {
+        $this->configureExampleField('checkboxes')
+            ->options(array(
+                'one' => 'One Option',
+                'two' => 'Second Option'
+            ))
+            ->defaultValue(array('two'));
+
+        $html = $this->invokePrivateMethod('renderCheckboxes');
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::renderTextarea
+     */
+    public function it_renders_a_textarea_field()
+    {
+        $this->configureExampleField('textarea')
+            ->defaultValue('A longer text input. It <strong>escapes</strong> HTML.');
+
+        $html = $this->invokePrivateMethod('renderTextarea', array(array('first-class', 'second-class')));
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::renderRadio
+     */
+    public function it_renders_a_radio_field()
+    {
+        $this->configureExampleField('radio')
+            ->options(array(
+                'one' => 'One Option',
+                'two' => 'Second Option'
+            ))
+            ->defaultValue('two');
+
+        $html = $this->invokePrivateMethod('renderRadio');
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::renderSelect
+     */
+    public function it_renders_a_select_field()
+    {
+        $this->configureExampleField('select')
+            ->options(array(
+                'one' => 'One Option',
+                'two' => 'Second Option'
+            ))
+            ->defaultValue('two');
+
+        $html = $this->invokePrivateMethod('renderSelect');
+
+        $this->assertEqualsExpectedFieldFile($html);
+    }
+
+    /**
+     * @test
+     * @covers ::getPostTypesForOptions
+     */
+    public function it_has_a_getPostTypesForOptions_method()
+    {
+        $expected = array(
+            'post' => 'Posts',
+            'page' => 'Pages',
+            'attachment' => 'Media'
+        );
+
+        $this->assertEquals(
+            $expected,
+            $this->invokePrivateMethod('getPostTypesForOptions')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::getTaxonomiesForOptions
+     */
+    public function it_has_a_getTaxonomiesForOptions_method()
+    {
+        $expected = array(
+            'category' => 'Categories',
+            'post_tag' => 'Tags',
+            'link_category' => 'Link Categories'
+        );
+
+        $this->assertEquals(
+            $expected,
+            $this->invokePrivateMethod('getTaxonomiesForOptions')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::getRenderers
+     */
+    public function it_has_a_getRenderers_method()
+    {
+        $expected = array(
+            'text' => 'renderTextField',
+            'textarea' => 'renderTextarea',
+            'checkbox' => 'renderCheckbox',
+            'checkboxes' => 'renderCheckboxes',
+            'radio' => 'renderRadio',
+            'select' => 'renderSelect',
+            'post_type' => 'renderSelect',
+            'post_types' => 'renderCheckboxes',
+            'taxonomy' => 'renderSelect',
+            'taxonomies' => 'renderCheckboxes',
+        );
+
+        $this->assertEquals(
+            $expected,
+            $this->invokePrivateMethod('getRenderers')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::render
+     */
+    public function it_has_a_render_method()
+    {
+        $field = $this->getMock(get_class($this->obj), array('renderSelect'));
+        $field->type('select');
+
+        $field->expects($this->once())
+            ->method('renderSelect')
+            ->willReturn('Rendered.');
+
+        ob_start();
+
+        $field->render();
+
+        $rendered_html = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertEquals(
+            'Rendered.',
+            $rendered_html
         );
     }
 }

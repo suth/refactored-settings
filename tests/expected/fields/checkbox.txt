@@ -1,0 +1,1 @@
+<label for="page-section-field"><input type="checkbox" id="page-section-field" name="page[section][field]"  checked='checked'/> Field description.</label>
