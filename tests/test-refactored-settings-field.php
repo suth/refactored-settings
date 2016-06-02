@@ -362,4 +362,109 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
 
         $this->assertEquals(1, did_action('rfs/some_action:plugin_slug.section_slug.field_slug'));
     }
+
+    /**
+     * @test
+     * @covers ::valueIsBoolean
+     */
+    public function it_has_a_valueIsBoolean_method()
+    {
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsBoolean')
+        );
+
+        $this->obj->type('checkbox');
+
+        $this->assertTrue(
+            $this->invokePrivateMethod('valueIsBoolean')
+        );
+
+        $this->obj->options(array('option'));
+
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsBoolean')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::valueIsArray
+     */
+    public function it_has_a_valueIsArray_method()
+    {
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+
+        $this->obj->type('checkbox');
+
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+
+        $this->obj->options(array('option'));
+
+        $this->assertTrue(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::valueIsArray
+     */
+    public function the_valueIsArray_method_handles_post_type_fields()
+    {
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+
+        $this->obj->type('post_type')->defaultValue('post');
+
+        $this->assertFalse(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+
+        $this->obj->defaultValue(array());
+
+        $this->assertTrue(
+            $this->invokePrivateMethod('valueIsArray')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::sanitize
+     */
+    public function it_has_a_sanitize_method()
+    {
+        $this->assertEquals(
+            'input_text',
+            $this->obj->sanitize('input_text')
+        );
+
+        $this->obj->type('checkbox');
+
+        $this->assertFalse(
+            $this->obj->sanitize(null)
+        );
+
+        $this->assertTrue(
+            $this->obj->sanitize('on')
+        );
+    }
+
+    /**
+     * @test
+     * @covers ::getFieldName
+     */
+    public function it_has_a_getFieldName_method_for_input_name_attribute()
+    {
+        $this->obj->page('page_set')->section('section_set')->slug('field_set');
+
+        $this->assertEquals(
+            'page_set[section_set][field_set]',
+            $this->invokePrivateMethod('getFieldName')
+        );
+    }
 }
