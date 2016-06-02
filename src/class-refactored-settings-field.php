@@ -234,13 +234,13 @@ class Refactored_Settings_Field_0_5_0 {
         if ($this->isType('post_type') ||
             $this->isType('post_types')
         ) {
-            $options = array_merge($options, $this->getPostTypesForOptions());
+            $options = array_merge((array) $options, $this->getPostTypesForOptions());
         }
 
         if ($this->isType('taxonomy') ||
             $this->isType('taxonomies')
         ) {
-            $options = array_merge($options, $this->getTaxonomiesForOptions());
+            $options = array_merge((array) $options, $this->getTaxonomiesForOptions());
         }
 
         return $options;
@@ -314,7 +314,11 @@ class Refactored_Settings_Field_0_5_0 {
             return $this->callback;
         }
 
-        return array(&$this, 'render');
+        $renderers = $this->getRenderers();
+
+        $renderer = $renderers[$this->getType()];
+
+        return array(&$this, $renderer);
     }
 
     /**
@@ -338,7 +342,7 @@ class Refactored_Settings_Field_0_5_0 {
         add_settings_field(
             $this->getId(),
             $this->getName(),
-            $this->getCallback(),
+            array(&$this, 'render'),
             $this->getPage(),
             $this->getSection()
         );
@@ -564,11 +568,7 @@ class Refactored_Settings_Field_0_5_0 {
 
     public function render()
     {
-        $renderers = $this->getRenderers();
-
-        $renderer = $renderers[$this->getType()];
-
-		echo call_user_func(array(&$this, $renderer));
+		echo call_user_func($this->getCallback());
     }
 }
 

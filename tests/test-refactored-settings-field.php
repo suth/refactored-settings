@@ -372,8 +372,10 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_a_callback_setter_and_getter()
     {
+        $this->obj->type('select');
+
         $this->assertEquals(
-            array($this->obj, 'render'),
+            array($this->obj, 'renderSelect'),
             $this->obj->getCallback()
         );
 
@@ -716,16 +718,14 @@ class RefactoredSettingsFieldTest extends WP_UnitTestCase {
      */
     public function it_has_a_render_method()
     {
-        $field = $this->getMock(get_class($this->obj), array('renderSelect'));
-        $field->type('select');
-
-        $field->expects($this->once())
-            ->method('renderSelect')
-            ->willReturn('Rendered.');
+        $this->obj->type('checkbox')
+            ->callback(function () {
+                return 'Rendered.';
+            });
 
         ob_start();
 
-        $field->render();
+        $this->obj->render();
 
         $rendered_html = ob_get_contents();
         ob_end_clean();
