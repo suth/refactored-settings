@@ -169,10 +169,13 @@ class Refactored_Settings_Field_0_5_0 {
             'text',
             'textarea',
             'checkbox',
+            'checkboxes',
             'radio',
             'select',
             'post_type',
+            'post_types',
             'taxonomy',
+            'taxonomies',
         );
     }
 
@@ -226,7 +229,21 @@ class Refactored_Settings_Field_0_5_0 {
      */
     public function getOptions()
     {
-        return $this->options;
+        $options = $this->options;
+
+        if ($this->isType('post_type') ||
+            $this->isType('post_types')
+        ) {
+            $options = array_merge($options, $this->getPostTypesForOptions());
+        }
+
+        if ($this->isType('taxonomy') ||
+            $this->isType('taxonomies')
+        ) {
+            $options = array_merge($options, $this->getTaxonomiesForOptions());
+        }
+
+        return $options;
     }
 
     /**
@@ -389,11 +406,10 @@ class Refactored_Settings_Field_0_5_0 {
      */
     private function valueIsArray()
     {
-        if ($this->isType('checkbox') && $this->getOptions()) {
-            return true;
-        }
-
-        if ($this->isType('post_type') && is_array($this->getDefaultValue())) {
+        if ($this->isType('checkboxes') ||
+            $this->isType('post_types') ||
+            $this->isType('taxonomies')
+        ) {
             return true;
         }
 
@@ -436,19 +452,6 @@ class Refactored_Settings_Field_0_5_0 {
     private function renderCheckbox()
     {
         $html = '';
-
-        if (is_array($this->getOptions())) {
-            $html .= $this->renderMultiCheckbox();
-        } else {
-            $html .= $this->renderSingleCheckbox();
-        }
-
-        return $html;
-    }
-
-    private function renderSingleCheckbox()
-    {
-        $html = '';
         $html .= '<label for="' . $this->getId() . '">';
         $html .= '<input type="checkbox" id="' . $this->getId() . '" name="' . $this->getFieldName() . '" ' . checked($this->getValue(), true, false) . '/>';
         $html .= ' ' . $this->getDescription() . '</label>';
@@ -456,7 +459,7 @@ class Refactored_Settings_Field_0_5_0 {
         return $html;
     }
 
-    private function renderMultiCheckbox()
+    private function renderCheckboxes()
     {
         $checkboxes = array();
 
@@ -505,7 +508,7 @@ class Refactored_Settings_Field_0_5_0 {
         return $html;
     }
 
-    public function renderSelect()
+    private function renderSelect()
     {
         $html = '<select id="' . $this->getId() . '" name="' . $this->getFieldName() . '">';
         foreach ($this->getOptions() as $key => $value) {
@@ -517,66 +520,55 @@ class Refactored_Settings_Field_0_5_0 {
         return $html;
     }
 
+    private function getPostTypesForOptions()
+    {
+        $post_types = get_post_types( array( 'public' => true ), 'objects' );
+
+        $options = array();
+
+        foreach ($post_types as $post_type) {
+            $options[$post_type->name] = $post_type->labels->name;
+        }
+
+        return $options;
+    }
+
+    private function getTaxonomiesForOptions()
+    {
+        $taxonomies = get_taxonomies( array( 'show_ui' => true ), 'objects' );
+
+        $options = array();
+
+        foreach ( $taxonomies as $key => $value ) {
+            $options[$key] = $value->labels->name;
+        }
+
+        return $options;
+    }
+
+    private function getRenderers()
+    {
+        return array(
+            'text' => 'renderTextField',
+            'textarea' => 'renderTextarea',
+            'checkbox' => 'renderCheckbox',
+            'checkboxes' => 'renderCheckboxes',
+            'radio' => 'renderRadio',
+            'select' => 'renderSelect',
+            'post_type' => 'renderSelect',
+            'post_types' => 'renderCheckboxes',
+            'taxonomy' => 'renderSelect',
+            'taxonomies' => 'renderCheckboxes',
+        );
+    }
+
     public function render()
     {
-		$html = '';
-		switch ($this->getType()) {
-			case 'text':
-                $html .= $this->renderTextField();
-				break;
+        $renderers = $this->getRenderers();
 
-			case 'textarea':
-                $html .= $this->renderTextarea();
-				break;
+        $renderer = $renderers[$this->getType()];
 
-			case 'checkbox':
-                $html .= $this->renderCheckbox();
-				break;
-
-			case 'radio':
-                $html .= $this->renderRadio();
-				break;
-			
-			case 'select':
-                $html .= $this->renderSelect();
-				break;
-
-			case 'post_type':
-				$post_types = get_post_types( array( 'public' => true ), 'objects' );
-                $options = array();
-                foreach ($post_types as $post_type) {
-                    $options[$post_type->name] = $post_type->labels->name;
-                }
-                $this->options($options);
-                if ($this->valueIsArray()) {
-                    $html .= $this->renderCheckbox();
-                } else {
-                    $html .= $this->renderSelect();
-                }
-				break;
-			
-			case 'taxonomy':
-				if ( $args['description'] ) $html .= $args['description'] . '<br>';
-				$taxonomies = $this->get_taxonomies_array( false );
-				$current_taxonomies = $this->options[$args['group']][$args['slug']];
-				if ( !is_array( $current_taxonomies ) ) {
-					$current_taxonomies = array();
-				}
-				$i = 0;
-				foreach ( $taxonomies as $taxonomy => $taxonomy_display_name ) {
-					$i++;
-					$html .= '<label for="' . $this->slug . '-' . $args['slug'] . '-' . $taxonomy . '">';
-					$html .= '<input type="checkbox" id="' . $this->slug . '-' . $args['slug'] . '-' . $taxonomy . '" name="' . $this->slug . '[' . $args['group'] . '][' . $args['slug'] . '][]" value="' . $taxonomy . '" ' . ( in_array( $taxonomy, $current_taxonomies ) ? 'checked="checked"' : '' ) . '/>';
-					$html .= ' ' . $taxonomy_display_name . '</label>';
-					if ( $i != count( $taxonomies ) ) $html .= '<br>';
-				}
-				break;
-			
-			default:
-				# code...
-				break;
-		}
-		echo $html;
+		echo call_user_func(array(&$this, $renderer));
     }
 }
 
