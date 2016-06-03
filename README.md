@@ -57,27 +57,27 @@ Various action hooks are provided for your convenience.
 
 These hooks are related to the main settings class which will be passed as an argument. Replace `{$setting}` with your chosen key.
 
-#### rfs/pre_init:{$setting}
+#### ```rfs/pre_init:{$setting}```
 
-Fires before the setting is initialized
+Fires before the setting is initialized. Useful for adding sections on the fly.
 
-#### rfs/post_init:{$setting}
+#### ```rfs/post_init:{$setting}```
 
 Fires after the setting is initialized
 
-#### rfs/before:{$setting}
+#### ```rfs/before:{$setting}```
 
 Print to settings page before the form
 
-#### rfs/after:{$setting}
+#### ```rfs/after:{$setting}```
 
 Print to settings page after the form
 
-#### rfs/activation:{$setting}
+#### ```rfs/activation:{$setting}```
 
 If a plugin file is specified, this is fired upon activation
 
-#### rfs/deactivation:{$setting}
+#### ```rfs/deactivation:{$setting}```
 
 If a plugin file is specified, this is fired upon deactivation
 
@@ -85,11 +85,11 @@ If a plugin file is specified, this is fired upon deactivation
 
 These hooks are related to the settings section class which will be passed as an argument. Replace `{$setting}` and `{$section}` with their relative keys.
 
-#### rfs/pre_init:{$setting}.{$section}
+#### ```rfs/pre_init:{$setting}.{$section}```
 
-Fires before the section is initialized
+Fires before the section is initialized. Useful for adding fields on the fly.
 
-#### rfs/post_init:{$setting}.{$section}
+#### ```rfs/post_init:{$setting}.{$section}```
 
 Fires after the section is initialized
 
@@ -97,10 +97,10 @@ Fires after the section is initialized
 
 These hooks are related to the settings field class which will be passed as an argument. Replace `{$setting}`, `{$section}`, and `{$field}` with their relative keys.
 
-#### rfs/pre_init:{$setting}.{$section}.{$field}
+#### ```rfs/pre_init:{$setting}.{$section}.{$field}```
 
 Fires before the field is initialized
 
-#### rfs/post_init:{$setting}.{$section}.{$field}
+#### ```rfs/post_init:{$setting}.{$section}.{$field}```
 
 Fires after the field is initialized
